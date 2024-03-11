@@ -1,6 +1,10 @@
 import * as THREE from 'three'
+import Stats from 'three/addons/libs/stats.module'
 
 const init = () => {
+  const stats = new Stats()
+  document.body.appendChild(stats.dom)
+
   const scene = new THREE.Scene()
   const camera = new THREE.PerspectiveCamera(
     45,
@@ -61,7 +65,25 @@ const init = () => {
   // add the output of the renderer to the html element
   document.body.appendChild(renderer.domElement)
 
+  let step = 0
   // render the scene
-  renderer.render(scene, camera)
+  const renderScene = () => {
+    stats.update()
+
+    // animate the cube
+    cube.rotation.x += 0.02
+    cube.rotation.y += 0.02
+    cube.rotation.z += 0.02
+
+    // animate the sphere
+    step += 0.04
+    sphere.position.x = 20 + 10 * Math.cos(step)
+    sphere.position.y = 2 + 10 * Math.abs(Math.sin(step))
+
+    requestAnimationFrame(renderScene)
+    renderer.render(scene, camera)
+  }
+
+  renderScene()
 }
 init()
