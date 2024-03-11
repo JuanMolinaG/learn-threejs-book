@@ -1,5 +1,7 @@
 import * as THREE from 'three'
 import Stats from 'three/addons/libs/stats.module'
+import { GUI } from 'three/addons/libs/lil-gui.module.min'
+import { OrbitControls } from 'three/addons/controls/OrbitControls.js'
 
 const init = () => {
   const stats = new Stats()
@@ -65,18 +67,33 @@ const init = () => {
   // add the output of the renderer to the html element
   document.body.appendChild(renderer.domElement)
 
+  // setup camera controls
+  const controls = new OrbitControls(camera, renderer.domElement)
+  controls.target.set(0, 0, 0)
+  controls.update()
+
+  // setup the control gui
+  const gui = new GUI()
+  const guiParams = {
+    rotationSpeed: 0.02,
+    bouncingSpeed: 0.04
+  }
+
+  gui.add(guiParams, 'rotationSpeed', 0.01, 0.5)
+  gui.add(guiParams, 'bouncingSpeed', 0.01, 0.5)
+
   let step = 0
   // render the scene
   const renderScene = () => {
     stats.update()
 
     // animate the cube
-    cube.rotation.x += 0.02
-    cube.rotation.y += 0.02
-    cube.rotation.z += 0.02
+    cube.rotation.x += guiParams.rotationSpeed
+    cube.rotation.y += guiParams.rotationSpeed
+    cube.rotation.z += guiParams.rotationSpeed
 
     // animate the sphere
-    step += 0.04
+    step += guiParams.bouncingSpeed
     sphere.position.x = 20 + 10 * Math.cos(step)
     sphere.position.y = 2 + 10 * Math.abs(Math.sin(step))
 
